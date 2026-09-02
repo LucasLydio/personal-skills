@@ -22,7 +22,7 @@ The packaged files must include:
 - `extension/out/src/extension.js`
 - `extension/out/src/registerSkillsView.js`
 - `extension/media/personal-skills.svg`
-- `extension/skills/example-skill/SKILL.md`
+- `extension/skills/clarify-task/SKILL.md`
 - `extension/README.md`
 
 Development-only files such as `src/`, `.vscode/`, `docs/`, and `tsconfig.json` should not be packaged.
@@ -33,7 +33,7 @@ Development-only files such as `src/`, `.vscode/`, `docs/`, and `tsconfig.json` 
 2. Start VS Code normally.
 3. Confirm the Personal Skills Activity Bar icon still exists.
 4. Open the Skills view and run the verification command.
-5. Confirm `example-skill` remains available in the agent-skill interface.
+5. Confirm `clarify-task` remains available in the agent-skill interface.
 
 ## Completion checklist
 
@@ -41,7 +41,7 @@ Development-only files such as `src/`, `.vscode/`, `docs/`, and `tsconfig.json` 
 - [ ] Extension packages into `personal-skills.vsix`
 - [ ] Extension installs locally
 - [ ] VS Code recognizes `personal.personal-skills`
-- [ ] VS Code discovers `example-skill`
+- [ ] VS Code discovers `clarify-task`
 - [ ] Activity Bar icon exists
 - [ ] Skills sidebar opens
 - [ ] Extension activates

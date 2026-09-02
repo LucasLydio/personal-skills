@@ -12,7 +12,8 @@ Version 0.2 provides:
 - persistent category and framework context metadata;
 - a configurable **Personal Skills: Skills Directory** setting;
 - a verification command;
-- one example agent skill through VS Code's native `chatSkills` contribution point.
+- a bundled `clarify-task` skill that turns ambiguous requests into actionable
+  briefs with focused questions.
 
 Bundled skills are immutable extension assets. They can be opened, activated,
 deactivated, or copied into Personal skills. Personal skills can additionally be

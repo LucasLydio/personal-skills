@@ -21,7 +21,9 @@ Current implementation evidence is recorded in
 
 The milestone provides VS Code infrastructure only. It does not create, edit, delete, import, download, or synchronize personal skills.
 
-The file at `skills/example-skill/SKILL.md` is a recognition fixture. It proves that VS Code can discover a skill bundled in the VSIX through `contributes.chatSkills`.
+The bundled `skills/clarify-task/SKILL.md` contribution helps agents refine
+ambiguous requests into actionable briefs. It also proves that VS Code can
+discover a skill bundled in the VSIX through `contributes.chatSkills`.
 
 ## Architecture invariants
 

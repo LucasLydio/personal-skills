@@ -12,7 +12,7 @@ pass without testing it in a normal installed-extension VS Code session.
 - [x] `personal-skills.vsix` is generated.
 - [x] The VSIX contains `out/extension.js` and `out/registerSkillsView.js`.
 - [x] The VSIX contains `media/personal-skills.svg`.
-- [x] The VSIX contains `skills/example-skill/SKILL.md`.
+- [x] The VSIX contains the configured bundled skill.
 - [x] The VSIX contains the PolyForm Noncommercial license.
 - [x] `code --list-extensions --show-versions` reports
       `personal.personal-skills@0.0.1`.
@@ -20,13 +20,13 @@ pass without testing it in a normal installed-extension VS Code session.
 ## Confirmed by the user
 
 - [x] The VSIX installed successfully in VS Code.
-- [x] VS Code displays the bundled `example-skill` name.
+- [x] VS Code displayed the bundled `example-skill` name in version `0.0.1`.
 
 ## Confirmed manually by the user
 
 - [x] The Personal Skills icon is visible in the Activity Bar.
 - [x] Selecting the icon opens the Skills sidebar.
-- [x] The sidebar lists `example-skill` with the `bundled` description.
+- [x] The version `0.0.1` sidebar listed `example-skill` as bundled.
 - [x] **Personal Skills: Verify Installation** reports version `0.0.1` as
       active.
 - [x] The Output panel's **Personal Skills** channel contains
@@ -95,6 +95,21 @@ Pending installed-extension verification:
 - [ ] Personal and bundled activation state survives a VS Code restart.
 - [ ] Copying a bundled skill creates a Personal copy.
 - [ ] Delete requires confirmation and removes only the selected Personal skill.
+
+## Unreleased bundled skill update
+
+Verified automatically:
+
+- [x] `clarify-task` replaces the diagnostic `example-skill` contribution.
+- [x] Its folder name and frontmatter name match.
+- [x] Its enablement setting matches the bundled-skill registry.
+
+Pending installed-extension verification:
+
+- [ ] The Bundled group lists `clarify-task` under General.
+- [ ] Native agent-skill discovery finds `clarify-task`.
+- [ ] Ambiguous requests trigger focused clarification while clear requests
+      proceed without unnecessary questions.
 
 ## Commands used
 

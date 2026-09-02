@@ -13,7 +13,7 @@ Create a TypeScript extension project that can compile, debug, package, and inst
 media/personal-skills.svg
 src/extension.ts
 src/registerSkillsView.ts
-skills/example-skill/SKILL.md
+skills/clarify-task/SKILL.md
 package.json
 tsconfig.json
 ```

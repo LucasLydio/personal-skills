@@ -11,7 +11,7 @@ Register the Activity Bar container, Skills view, verification command, and bund
 | View container | `personalSkills` |
 | Skills view | `personalSkills.skills` |
 | Verify command | `personalSkills.verifyInstallation` |
-| Bundled skill | `skills/example-skill/SKILL.md` |
+| Bundled skill | `skills/clarify-task/SKILL.md` |
 
 ## Procedure
 
@@ -41,5 +41,5 @@ Bundled skills are immutable extension assets. They are not the correct destinat
 
 - The Personal Skills icon appears in the Activity Bar.
 - The Skills view opens without a missing-provider error.
-- `example-skill` is discoverable in VS Code's agent-skill interface.
+- `clarify-task` is discoverable in VS Code's agent-skill interface.
 - Running **Personal Skills: Verify Installation** shows an active status.

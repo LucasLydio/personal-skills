@@ -14,5 +14,5 @@ export const COMMANDS = {
 } as const;
 
 export const BUNDLED_ENABLEMENT_SETTINGS: Readonly<Record<string, string>> = {
-  "example-skill": "bundled.exampleSkill.enabled"
+  "clarify-task": "bundled.clarifyTask.enabled"
 };

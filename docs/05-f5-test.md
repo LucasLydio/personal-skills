@@ -11,10 +11,10 @@ Perform the one development-host smoke test before installing the VSIX into the 
 3. Run `npm run compile`.
 4. Press `F5` and select **Run Personal Skills Extension** if prompted.
 5. In the Extension Development Host, select the Personal Skills Activity Bar icon.
-6. Confirm the Skills view displays `example-skill` with the `bundled` description.
+6. Confirm the Skills view displays `clarify-task` under the Bundled group.
 7. Select the check icon in the view title or run **Personal Skills: Verify Installation**.
 8. Open the Output panel, select **Personal Skills**, and confirm `Personal Skills activated.` appears.
-9. Open the agent customization Skills interface or type `/skills` in Chat and locate `example-skill`.
+9. Open the agent customization Skills interface or type `/skills` in Chat and locate `clarify-task`.
 10. Stop the debug session and close the Extension Development Host.
 
 ## Expected behavior
@@ -26,4 +26,4 @@ F5 opens a second window because VS Code isolates extension debugging in an Exte
 - No activation error is reported.
 - The Activity Bar container and Skills view render.
 - The verify command reports the current manifest version as active.
-- Native agent-skill discovery finds `example-skill`.
+- Native agent-skill discovery finds `clarify-task`.

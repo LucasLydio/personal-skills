@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import test from "node:test";
+import { BUNDLED_ENABLEMENT_SETTINGS } from "../src/constants";
 import type { SkillFormValue } from "../src/domain/skill";
 import {
   copyBundledSkill,
@@ -142,6 +143,37 @@ test("returns an empty list for a missing directory", async () => {
   assert.deepEqual(await discoverSkills(missing, "personal"), []);
 });
 
+test("keeps the bundled skill contribution and enablement setting aligned", async () => {
+  const bundled = await discoverSkills(
+    path.join(process.cwd(), "skills"),
+    "bundled"
+  );
+  const skill = bundled.find(({ name }) => name === "clarify-task");
+  assert.ok(skill);
+  assert.equal(skill.name, "clarify-task");
+  assert.equal(
+    bundled.some(({ name }) => name === "example-skill"),
+    false
+  );
+
+  const manifest = JSON.parse(
+    await readFile(path.join(process.cwd(), "package.json"), "utf8")
+  ) as ExtensionManifest;
+  const contribution = manifest.contributes.chatSkills.find(
+    ({ path: skillPath }) => skillPath === "./skills/clarify-task/SKILL.md"
+  );
+  const setting = BUNDLED_ENABLEMENT_SETTINGS[skill.name];
+
+  assert.ok(contribution);
+  assert.equal(contribution.when, `config.personalSkills.${setting}`);
+  assert.ok(
+    Object.hasOwn(
+      manifest.contributes.configuration.properties,
+      `personalSkills.${setting}`
+    )
+  );
+});
+
 test("rejects a skill name that could escape the root", async (context) => {
   const root = await temporaryDirectory(context);
   const invalid = {
@@ -216,4 +248,16 @@ async function writeSkill(
     ""
   ].filter((line) => line !== "");
   await writeFile(path.join(directory, "SKILL.md"), lines.join("\n"), "utf8");
+}
+
+interface ExtensionManifest {
+  readonly contributes: {
+    readonly chatSkills: readonly {
+      readonly path: string;
+      readonly when?: string;
+    }[];
+    readonly configuration: {
+      readonly properties: Readonly<Record<string, unknown>>;
+    };
+  };
 }

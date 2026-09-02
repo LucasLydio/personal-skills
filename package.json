@@ -36,8 +36,8 @@
   "contributes": {
     "chatSkills": [
       {
-        "path": "./skills/example-skill/SKILL.md",
-        "when": "config.personalSkills.bundled.exampleSkill.enabled"
+        "path": "./skills/clarify-task/SKILL.md",
+        "when": "config.personalSkills.bundled.clarifyTask.enabled"
       }
     ],
     "commands": [
@@ -100,11 +100,11 @@
           "scope": "window",
           "description": "Directory containing personal skill folders. Each direct child folder must contain a SKILL.md file. A leading ~ resolves to your home directory."
         },
-        "personalSkills.bundled.exampleSkill.enabled": {
+        "personalSkills.bundled.clarifyTask.enabled": {
           "type": "boolean",
           "default": true,
           "scope": "window",
-          "description": "Enable the example skill bundled with Personal Skills. This setting persists across VS Code restarts."
+          "description": "Enable the bundled clarify-task skill. This setting persists across VS Code restarts."
         }
       }
     },
