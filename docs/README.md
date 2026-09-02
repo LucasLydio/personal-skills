@@ -11,6 +11,11 @@ Follow the phases in order:
 5. [`05-f5-test.md`](05-f5-test.md)
 6. [`06-local-installation.md`](06-local-installation.md)
 7. [`07-verification.md`](07-verification.md)
+8. [`08-skill-discovery.md`](08-skill-discovery.md)
+9. [`09-skill-management.md`](09-skill-management.md)
+
+Current implementation evidence is recorded in
+[`VERIFICATION-STATUS.md`](VERIFICATION-STATUS.md).
 
 ## Scope for this milestone
 

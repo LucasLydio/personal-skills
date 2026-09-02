@@ -19,8 +19,8 @@ npx vsce ls
 The packaged files must include:
 
 - `extension/package.json`
-- `extension/out/extension.js`
-- `extension/out/registerSkillsView.js`
+- `extension/out/src/extension.js`
+- `extension/out/src/registerSkillsView.js`
 - `extension/media/personal-skills.svg`
 - `extension/skills/example-skill/SKILL.md`
 - `extension/README.md`

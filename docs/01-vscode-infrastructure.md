@@ -34,5 +34,5 @@ The installed editor can be newer than the newest `@types/vscode` package publis
 
 - `npm install` creates `package-lock.json`.
 - `npm run compile` exits with code 0.
-- `out/extension.js` and `out/registerSkillsView.js` exist.
+- `out/src/extension.js` and `out/src/registerSkillsView.js` exist.
 - No skill creation, editing, or deletion behavior exists.

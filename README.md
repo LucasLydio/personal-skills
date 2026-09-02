@@ -1,19 +1,28 @@
 # Personal Skills
 
-Personal Skills is a minimal Visual Studio Code extension infrastructure for bundling agent skills.
+Personal Skills discovers and displays agent skills in Visual Studio Code.
 
-The first version contributes:
+Version 0.2 provides:
 
 - a **Personal Skills** Activity Bar container;
-- a read-only **Skills** tree view;
+- read-only discovery from `~/.agents/skills`;
+- Personal and Bundled groups organized by category;
+- create and edit forms for personal skills;
+- open, refresh, activate, deactivate, copy, and confirmed-delete actions;
+- persistent category and framework context metadata;
+- a configurable **Personal Skills: Skills Directory** setting;
 - a verification command;
 - one example agent skill through VS Code's native `chatSkills` contribution point.
+
+Bundled skills are immutable extension assets. They can be opened, activated,
+deactivated, or copied into Personal skills. Personal skills can additionally be
+created, edited, and deleted.
 
 ## Development
 
 ```powershell
 npm install
-npm run compile
+npm test
 ```
 
 Press `F5` once to test the extension in an Extension Development Host.

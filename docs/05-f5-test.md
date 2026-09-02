@@ -25,5 +25,5 @@ F5 opens a second window because VS Code isolates extension debugging in an Exte
 
 - No activation error is reported.
 - The Activity Bar container and Skills view render.
-- The verify command reports version `0.0.1` as active.
+- The verify command reports the current manifest version as active.
 - Native agent-skill discovery finds `example-skill`.

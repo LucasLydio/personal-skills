@@ -2,7 +2,7 @@
   "name": "personal-skills",
   "displayName": "Personal Skills",
   "description": "Bundle and expose personal agent skills in Visual Studio Code.",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "publisher": "personal",
   "private": true,
   "license": "PolyForm-Noncommercial-1.0.0",
@@ -22,13 +22,22 @@
   ],
   "activationEvents": [
     "onView:personalSkills.skills",
-    "onCommand:personalSkills.verifyInstallation"
+    "onCommand:personalSkills.verifyInstallation",
+    "onCommand:personalSkills.refresh",
+    "onCommand:personalSkills.openSkill",
+    "onCommand:personalSkills.addSkill",
+    "onCommand:personalSkills.editSkill",
+    "onCommand:personalSkills.deleteSkill",
+    "onCommand:personalSkills.toggleSkill",
+    "onCommand:personalSkills.copyBundledSkill"
   ],
-  "main": "./out/extension.js",
+  "type": "commonjs",
+  "main": "./out/src/extension.js",
   "contributes": {
     "chatSkills": [
       {
-        "path": "./skills/example-skill/SKILL.md"
+        "path": "./skills/example-skill/SKILL.md",
+        "when": "config.personalSkills.bundled.exampleSkill.enabled"
       }
     ],
     "commands": [
@@ -37,8 +46,68 @@
         "title": "Verify Installation",
         "category": "Personal Skills",
         "icon": "$(check)"
+      },
+      {
+        "command": "personalSkills.refresh",
+        "title": "Refresh Skills",
+        "category": "Personal Skills",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "personalSkills.openSkill",
+        "title": "Open Skill",
+        "category": "Personal Skills",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "personalSkills.addSkill",
+        "title": "Create Personal Skill",
+        "category": "Personal Skills",
+        "icon": "$(add)"
+      },
+      {
+        "command": "personalSkills.editSkill",
+        "title": "Edit Skill",
+        "category": "Personal Skills",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "personalSkills.deleteSkill",
+        "title": "Delete Skill",
+        "category": "Personal Skills",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "personalSkills.toggleSkill",
+        "title": "Activate or Deactivate Skill",
+        "category": "Personal Skills",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "personalSkills.copyBundledSkill",
+        "title": "Copy to Personal Skills",
+        "category": "Personal Skills",
+        "icon": "$(files)"
       }
     ],
+    "configuration": {
+      "title": "Personal Skills",
+      "type": "object",
+      "properties": {
+        "personalSkills.skillsDirectory": {
+          "type": "string",
+          "default": "~/.agents/skills",
+          "scope": "window",
+          "description": "Directory containing personal skill folders. Each direct child folder must contain a SKILL.md file. A leading ~ resolves to your home directory."
+        },
+        "personalSkills.bundled.exampleSkill.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "description": "Enable the example skill bundled with Personal Skills. This setting persists across VS Code restarts."
+        }
+      }
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -61,17 +130,104 @@
     "menus": {
       "view/title": [
         {
+          "command": "personalSkills.addSkill",
+          "when": "view == personalSkills.skills",
+          "group": "navigation@1"
+        },
+        {
+          "command": "personalSkills.refresh",
+          "when": "view == personalSkills.skills",
+          "group": "navigation@2"
+        },
+        {
           "command": "personalSkills.verifyInstallation",
           "when": "view == personalSkills.skills",
-          "group": "navigation"
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "personalSkills.openSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.personal",
+          "group": "inline@1"
+        },
+        {
+          "command": "personalSkills.openSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.personalReadOnly",
+          "group": "inline@1"
+        },
+        {
+          "command": "personalSkills.openSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.bundled",
+          "group": "inline@1"
+        },
+        {
+          "command": "personalSkills.editSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.personal",
+          "group": "inline@2"
+        },
+        {
+          "command": "personalSkills.copyBundledSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.bundled",
+          "group": "inline@2"
+        },
+        {
+          "command": "personalSkills.toggleSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.personal",
+          "group": "inline@3"
+        },
+        {
+          "command": "personalSkills.toggleSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.bundled",
+          "group": "inline@3"
+        },
+        {
+          "command": "personalSkills.deleteSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.skill.personal",
+          "group": "destructive@1"
+        },
+        {
+          "command": "personalSkills.addSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.source.personal",
+          "group": "inline@1"
+        },
+        {
+          "command": "personalSkills.addSkill",
+          "when": "view == personalSkills.skills && viewItem == personalSkills.category.personal",
+          "group": "inline@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "personalSkills.openSkill",
+          "when": "false"
+        },
+        {
+          "command": "personalSkills.editSkill",
+          "when": "false"
+        },
+        {
+          "command": "personalSkills.deleteSkill",
+          "when": "false"
+        },
+        {
+          "command": "personalSkills.toggleSkill",
+          "when": "false"
+        },
+        {
+          "command": "personalSkills.copyBundledSkill",
+          "when": "false"
         }
       ]
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
+    "clean": "node -e \"for (const path of ['out', '.test-out']) require('node:fs').rmSync(path, { recursive: true, force: true })\"",
+    "precompile": "npm run clean",
     "compile": "tsc -p ./",
     "watch": "tsc --watch -p ./",
+    "test": "npm run compile && node --test out/test/skillFileService.test.js",
     "package": "vsce package --out personal-skills.vsix",
     "install:local": "npm run package && code --install-extension personal-skills.vsix --force"
   },

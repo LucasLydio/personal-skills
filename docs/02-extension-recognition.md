@@ -11,7 +11,7 @@ Publisher: personal
 Name: personal-skills
 Extension ID: personal.personal-skills
 Display name: Personal Skills
-Main entry point: ./out/extension.js
+Main entry point: ./out/src/extension.js
 ```
 
 ## Procedure
