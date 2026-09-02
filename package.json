@@ -1,0 +1,80 @@
+{
+  "name": "personal-skills",
+  "displayName": "Personal Skills",
+  "description": "Bundle and expose personal agent skills in Visual Studio Code.",
+  "version": "0.0.1",
+  "publisher": "personal",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.134.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "activationEvents": [
+    "onView:personalSkills.skills",
+    "onCommand:personalSkills.verifyInstallation"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "chatSkills": [
+      {
+        "path": "./skills/example-skill/SKILL.md"
+      }
+    ],
+    "commands": [
+      {
+        "command": "personalSkills.verifyInstallation",
+        "title": "Verify Installation",
+        "category": "Personal Skills",
+        "icon": "$(check)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "personalSkills",
+          "title": "Personal Skills",
+          "icon": "media/personal-skills.svg"
+        }
+      ]
+    },
+    "views": {
+      "personalSkills": [
+        {
+          "id": "personalSkills.skills",
+          "name": "Skills",
+          "icon": "media/personal-skills.svg",
+          "contextualTitle": "Personal Skills"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "personalSkills.verifyInstallation",
+          "when": "view == personalSkills.skills",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc --watch -p ./",
+    "package": "vsce package --out personal-skills.vsix",
+    "install:local": "npm run package && code --install-extension personal-skills.vsix --force"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/vscode": "^1.134.0",
+    "@vscode/vsce": "^3.6.2",
+    "typescript": "^5.9.2"
+  }
+}
