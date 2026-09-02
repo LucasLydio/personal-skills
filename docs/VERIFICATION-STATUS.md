@@ -80,6 +80,9 @@ Verified automatically:
 - [x] All TypeScript source and test files remain below 400 lines.
 - [x] Manifest command IDs match activation events.
 - [x] Bundled skill contribution paths resolve.
+- [x] Renaming updates both the skill directory and `SKILL.md` frontmatter.
+- [x] Renaming preserves nested skill resources and rejects name collisions.
+- [x] The editor contains the complete naming rules and a valid example.
 
 Pending installed-extension verification:
 
@@ -87,6 +90,8 @@ Pending installed-extension verification:
 - [ ] The create form writes a personal skill and its metadata.
 - [ ] Personal and Bundled skills appear under the expected categories.
 - [ ] Edit and open actions work from the tree.
+- [ ] Editing a skill can rename it and immediately refresh the tree.
+- [ ] Invalid names display the complete naming rules in the editor.
 - [ ] Personal and bundled activation state survives a VS Code restart.
 - [ ] Copying a bundled skill creates a Personal copy.
 - [ ] Delete requires confirmation and removes only the selected Personal skill.

@@ -64,13 +64,16 @@ The create/edit form manages:
 - Markdown instructions;
 - activation state.
 
-Names are immutable after creation because the Agent Skills specification
-requires the frontmatter name to match its parent directory. Editing preserves
-unrelated frontmatter such as `license`, `compatibility`, and `allowed-tools`.
+Names can be changed while editing. The extension renames the complete skill
+directory and updates the frontmatter name together so they continue to match.
+Editing preserves unrelated frontmatter such as `license`, `compatibility`, and
+`allowed-tools`.
 
 ## Safety behavior
 
 - Names must be lowercase kebab-case and at most 64 characters.
+- The editor displays the complete naming rules and a valid example.
+- Renaming is rejected when another personal skill already uses the new name.
 - All mutable paths must be direct children of the configured Personal skills
   directory.
 - Linked skills are read-only in the manager.

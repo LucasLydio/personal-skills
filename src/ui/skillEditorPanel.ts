@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import * as vscode from "vscode";
 import {
   SKILL_CATEGORIES,
+  SKILL_NAME_VALIDATION_MESSAGE,
   categoryLabel,
   isSkillCategory,
   validateSkillForm,
@@ -55,7 +56,7 @@ export async function showSkillEditor(
         return;
       }
 
-      const value = parseFormValue(message.value, initial.name);
+      const value = parseFormValue(message.value);
       if (!value) {
         await vscode.window.showErrorMessage("The skill form is invalid.");
         return;
@@ -97,10 +98,7 @@ function initialValue(options: SkillEditorOptions): SkillFormValue {
   };
 }
 
-function parseFormValue(
-  candidate: unknown,
-  fallbackName: string
-): SkillFormValue | undefined {
+function parseFormValue(candidate: unknown): SkillFormValue | undefined {
   if (!isRecord(candidate)) {
     return undefined;
   }
@@ -117,7 +115,7 @@ function parseFormValue(
   }
 
   return {
-    name: candidate.name.trim() || fallbackName,
+    name: candidate.name.trim(),
     description: candidate.description.trim(),
     category,
     framework:
@@ -154,14 +152,16 @@ function renderEditor(
     body { padding: 24px; color: var(--vscode-foreground); background: var(--vscode-editor-background); font-family: var(--vscode-font-family); }
     main { max-width: 820px; margin: 0 auto; }
     h1 { font-size: 1.5rem; margin: 0 0 8px; }
-    .hint { color: var(--vscode-descriptionForeground); margin: 0 0 24px; }
+    .hint, .help { color: var(--vscode-descriptionForeground); }
+    .hint { margin: 0 0 24px; }
+    .help { font-size: .9em; line-height: 1.4; margin: 0; }
+    .error { color: var(--vscode-inputValidation-errorForeground, var(--vscode-errorForeground)); min-height: 1.4em; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
     .wide { grid-column: 1 / -1; }
     label { font-weight: 600; }
     input, select, textarea { box-sizing: border-box; width: 100%; color: var(--vscode-input-foreground); background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, transparent); padding: 8px; font: inherit; }
     input:focus, select:focus, textarea:focus { outline: 1px solid var(--vscode-focusBorder); }
-    input[readonly] { opacity: .75; }
     textarea { min-height: 320px; resize: vertical; font-family: var(--vscode-editor-font-family); }
     .check { flex-direction: row; align-items: center; }
     .check input { width: auto; }
@@ -180,7 +180,9 @@ function renderEditor(
       <div class="grid">
         <div class="field">
           <label for="name">Name</label>
-          <input id="name" name="name" value="${escapeHtml(value.name)}" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="64" required${isEdit ? " readonly" : ""}>
+          <input id="name" name="name" value="${escapeHtml(value.name)}" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="64" aria-describedby="name-rules name-error" required>
+          <p class="help" id="name-rules">Use 1-64 lowercase letters or numbers, with one hyphen between words. No spaces, underscores, uppercase letters, or leading, trailing, or repeated hyphens. Example: <code>nodejs-api-review</code>.</p>
+          <p class="help error" id="name-error" role="alert"></p>
         </div>
         <div class="field">
           <label for="category">Category</label>
@@ -212,9 +214,29 @@ function renderEditor(
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
     const form = document.getElementById('skill-form');
+    const nameInput = document.getElementById('name');
+    const nameError = document.getElementById('name-error');
+    const nameValidationMessage = ${JSON.stringify(SKILL_NAME_VALIDATION_MESSAGE)};
+    const validName = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+    const validateName = () => {
+      const name = nameInput.value.trim();
+      const message = name.length <= 64 && validName.test(name)
+        ? ''
+        : nameValidationMessage;
+      nameInput.setCustomValidity(message);
+      nameError.textContent = message;
+      return message.length === 0;
+    };
+
+    nameInput.addEventListener('input', validateName);
+    nameInput.addEventListener('invalid', validateName);
     document.getElementById('cancel').addEventListener('click', () => vscode.postMessage({ type: 'cancel' }));
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (!validateName() || !form.reportValidity()) {
+        return;
+      }
       vscode.postMessage({
         type: 'save',
         value: {

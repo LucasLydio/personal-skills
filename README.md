@@ -7,7 +7,7 @@ Version 0.2 provides:
 - a **Personal Skills** Activity Bar container;
 - read-only discovery from `~/.agents/skills`;
 - Personal and Bundled groups organized by category;
-- create and edit forms for personal skills;
+- create, edit, and rename forms for personal skills with visible naming rules;
 - open, refresh, activate, deactivate, copy, and confirmed-delete actions;
 - persistent category and framework context metadata;
 - a configurable **Personal Skills: Skills Directory** setting;

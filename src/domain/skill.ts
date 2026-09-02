@@ -47,6 +47,12 @@ export interface SkillDocument {
   readonly instructions: string;
 }
 
+export const SKILL_NAME_VALIDATION_MESSAGE =
+  "Name must use 1-64 characters: lowercase letters (a-z), numbers (0-9), " +
+  "and single hyphens (-) between words. Do not use spaces, underscores, " +
+  "uppercase letters, or leading, trailing, or repeated hyphens. " +
+  "Example: nodejs-api-review.";
+
 export function isSkillCategory(value: unknown): value is SkillCategory {
   return (
     typeof value === "string" &&
@@ -63,12 +69,11 @@ export function categoryLabel(category: SkillCategory): string {
 }
 
 export function validateSkillForm(value: SkillFormValue): string | undefined {
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.name)) {
-    return "Name must contain lowercase letters, numbers, and single hyphens only.";
-  }
-
-  if (value.name.length > 64) {
-    return "Name must be at most 64 characters.";
+  if (
+    value.name.length > 64 ||
+    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.name)
+  ) {
+    return SKILL_NAME_VALIDATION_MESSAGE;
   }
 
   if (!value.description.trim()) {

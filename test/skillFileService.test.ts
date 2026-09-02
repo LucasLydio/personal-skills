@@ -62,12 +62,19 @@ test("creates, edits, disables, enables, and deletes a skill", async (context) =
   };
 
   await createPersonalSkill(root, created);
+  await mkdir(path.join(root, created.name, "references"));
+  await writeFile(
+    path.join(root, created.name, "references", "guide.md"),
+    "Keep this resource.",
+    "utf8"
+  );
   let [skill] = await discoverSkills(root, "personal");
   assert.equal(skill.enabled, true);
   assert.equal(skill.framework, "NestJS");
 
   await updatePersonalSkill(root, skill, {
     ...created,
+    name: "api-contract-review",
     description: "Review backend APIs and DTOs",
     category: "testing",
     framework: "Fastify",
@@ -75,10 +82,17 @@ test("creates, edits, disables, enables, and deletes a skill", async (context) =
     enabled: false
   });
   [skill] = await discoverSkills(root, "personal");
+  assert.equal(skill.name, "api-contract-review");
+  assert.equal(skill.directoryName, "api-contract-review");
   assert.equal(skill.enabled, false);
   assert.equal(path.basename(skill.skillFilePath), "SKILL.md.disabled");
   assert.equal(skill.category, "testing");
   assert.match(skill.content, /Review backend APIs and DTOs/);
+  assert.match(skill.content, /^name: "api-contract-review"$/m);
+  assert.equal(
+    await readFile(path.join(skill.directoryPath, "references", "guide.md"), "utf8"),
+    "Keep this resource."
+  );
 
   await setPersonalSkillEnabled(root, skill, true);
   [skill] = await discoverSkills(root, "personal");
@@ -140,7 +154,38 @@ test("rejects a skill name that could escape the root", async (context) => {
 
   await assert.rejects(
     createPersonalSkill(root, invalid),
-    /lowercase letters, numbers, and single hyphens/
+    /lowercase letters \(a-z\).*single hyphens/
+  );
+});
+
+test("rejects renaming a skill over an existing skill", async (context) => {
+  const root = await temporaryDirectory(context);
+  const value: SkillFormValue = {
+    name: "first-skill",
+    description: "First",
+    category: "general",
+    instructions: "# First",
+    enabled: true
+  };
+  await createPersonalSkill(root, value);
+  await createPersonalSkill(root, {
+    ...value,
+    name: "existing-skill",
+    description: "Existing"
+  });
+  const discovered = await discoverSkills(root, "personal");
+  const first = discovered.find((skill) => skill.name === "first-skill");
+  assert.ok(first);
+
+  await assert.rejects(
+    updatePersonalSkill(root, first, { ...value, name: "existing-skill" }),
+    /already exists/
+  );
+
+  const skills = await discoverSkills(root, "personal");
+  assert.deepEqual(
+    skills.map((skill) => skill.name),
+    ["existing-skill", "first-skill"]
   );
 });
 

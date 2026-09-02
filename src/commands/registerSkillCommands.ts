@@ -55,10 +55,13 @@ export function registerSkillCommands(
         }
 
         await runSkillAction(output, async () => {
+          const previousName = item.skill.name;
           await updatePersonalSkill(getPersonalDirectory(), item.skill, value);
           provider.refresh();
           await vscode.window.showInformationMessage(
-            `Updated personal skill '${item.skill.name}'.`
+            previousName === value.name
+              ? `Updated personal skill '${value.name}'.`
+              : `Renamed personal skill '${previousName}' to '${value.name}'.`
           );
         });
       }

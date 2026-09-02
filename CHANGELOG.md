@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Allow personal skills to be renamed safely from the edit form.
+- Display complete skill-name rules and an example in the editor.
+
 ## 0.2.0
 
 - Add a form for creating and editing personal skills.

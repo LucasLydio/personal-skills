@@ -1,5 +1,6 @@
 import {
   cp,
+  lstat,
   mkdir,
   readFile,
   readdir,
@@ -120,21 +121,38 @@ export async function updatePersonalSkill(
 ): Promise<void> {
   assertMutablePersonalSkill(rootDirectory, skill);
   assertValidForm(value);
-  if (value.name !== skill.directoryName) {
-    throw new Error("Skill names cannot be changed after creation.");
+  const renamedDirectory = resolveSkillDirectory(rootDirectory, value.name);
+  const isRenamed = value.name !== skill.directoryName;
+
+  if (isRenamed && (await pathExists(renamedDirectory))) {
+    throw new Error(`A skill named '${value.name}' already exists.`);
   }
+
   const updated = updateSkillDocument(
     skill.content,
-    skill.directoryName,
+    value.name,
     value.description,
     value.instructions
   );
 
-  await writeFile(skill.skillFilePath, updated, "utf8");
-  await writeMetadata(skill.directoryPath, value);
+  if (isRenamed) {
+    await rename(skill.directoryPath, renamedDirectory);
+  }
+
+  const directoryPath = isRenamed ? renamedDirectory : skill.directoryPath;
+  const currentSkillFilePath = path.join(
+    directoryPath,
+    path.basename(skill.skillFilePath)
+  );
+
+  await writeFile(currentSkillFilePath, updated, "utf8");
+  await writeMetadata(directoryPath, value);
 
   if (value.enabled !== skill.enabled) {
-    await setPersonalSkillEnabled(rootDirectory, skill, value.enabled);
+    await rename(
+      currentSkillFilePath,
+      path.join(directoryPath, value.enabled ? ACTIVE_FILE : DISABLED_FILE)
+    );
   }
 }
 
@@ -266,6 +284,18 @@ async function readOptionalFile(filePath: string): Promise<string | undefined> {
   } catch (error) {
     if (isMissingError(error)) {
       return undefined;
+    }
+    throw error;
+  }
+}
+
+async function pathExists(filePath: string): Promise<boolean> {
+  try {
+    await lstat(filePath);
+    return true;
+  } catch (error) {
+    if (isMissingError(error)) {
+      return false;
     }
     throw error;
   }
