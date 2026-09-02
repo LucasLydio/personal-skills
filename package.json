@@ -5,7 +5,11 @@
   "version": "0.0.1",
   "publisher": "personal",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucasLydio/personal-skills.git"
+  },
   "engines": {
     "vscode": "^1.134.0"
   },

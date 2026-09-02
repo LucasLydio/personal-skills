@@ -31,3 +31,11 @@ Run **Developer: Reload Window** in the current VS Code window after installatio
 The source checkout includes the implementation and verification runbook at
 `docs/README.md`. Development documentation is intentionally excluded from the
 installed VSIX.
+
+## License
+
+Personal Skills is available under the PolyForm Noncommercial License 1.0.0.
+You may use, copy, modify, and distribute it for noncommercial purposes.
+Commercial use requires separate written permission from the copyright holder.
+
+See `LICENSE` for the complete terms.
