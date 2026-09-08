@@ -32,7 +32,8 @@
     "onCommand:personalSkills.editSkill",
     "onCommand:personalSkills.deleteSkill",
     "onCommand:personalSkills.toggleSkill",
-    "onCommand:personalSkills.copyBundledSkill"
+    "onCommand:personalSkills.copyBundledSkill",
+    "onLanguageModelTool:personal_skills_get_clarify_task"
   ],
   "type": "commonjs",
   "main": "./out/src/extension.js",
@@ -41,6 +42,31 @@
       {
         "path": "./skills/clarify-task/SKILL.md",
         "when": "config.personalSkills.bundled.clarifyTask.enabled"
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "personal_skills_get_clarify_task",
+        "displayName": "Get Clarify Task Skill",
+        "modelDescription": "Returns the full clarify-task skill instructions when a user asks to clarify, refine, or improve an ambiguous request or prompt.",
+        "userDescription": "Loads the clarify-task skill instructions on demand.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "clarifyTask",
+        "icon": "$(question)",
+        "when": "config.personalSkills.languageTools.clarifyTask.enabled",
+        "tags": [
+          "personal-skills",
+          "prompting"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "string",
+              "description": "Optional user request that needs clarification."
+            }
+          }
+        }
       }
     ],
     "commands": [
@@ -126,6 +152,12 @@
           "default": true,
           "scope": "window",
           "description": "Enable the bundled clarify-task skill. This setting persists across VS Code restarts."
+        },
+        "personalSkills.languageTools.clarifyTask.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "description": "Expose clarify-task as a read-only language model tool so agents can load the full skill only when needed."
         }
       }
     },

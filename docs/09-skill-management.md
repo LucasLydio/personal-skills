@@ -26,6 +26,21 @@ The Skills sidebar includes title-bar commands for narrowing the visible tree:
 Search and filters only change the visible sidebar results. They do not rename,
 activate, deactivate, move, or delete any skill files.
 
+## Lazy language model tool
+
+The extension contributes `personal_skills_get_clarify_task` through
+`contributes.languageModelTools` and registers the implementation with
+`vscode.lm.registerTool`.
+
+The model-facing contribution stays intentionally small. When a compatible
+agent chooses the tool, the implementation returns the full `clarify-task`
+`SKILL.md` content. The active Personal copy is preferred; if it is missing or
+inactive, the bundled copy is returned.
+
+The tool is read-only and does not create, edit, activate, deactivate, or delete
+skills. It can be disabled with
+`personalSkills.languageTools.clarifyTask.enabled`.
+
 ## Categories
 
 Skills can be assigned to General, Backend, Frontend, DevOps, CI/CD, Testing,

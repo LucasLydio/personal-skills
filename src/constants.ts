@@ -1,6 +1,8 @@
 export const EXTENSION_ID = "personal.personal-skills";
 export const VIEW_ID = "personalSkills.skills";
 export const DEFAULT_SKILLS_DIRECTORY = "~/.agents/skills";
+export const CLARIFY_TASK_SKILL_NAME = "clarify-task";
+export const CLARIFY_TASK_TOOL_NAME = "personal_skills_get_clarify_task";
 
 export const COMMANDS = {
   verify: "personalSkills.verifyInstallation",

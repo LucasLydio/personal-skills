@@ -3,7 +3,10 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import test from "node:test";
-import { BUNDLED_ENABLEMENT_SETTINGS } from "../src/constants";
+import {
+  BUNDLED_ENABLEMENT_SETTINGS,
+  CLARIFY_TASK_TOOL_NAME
+} from "../src/constants";
 import type { SkillFormValue } from "../src/domain/skill";
 import {
   copyBundledSkill,
@@ -174,6 +177,33 @@ test("keeps the bundled skill contribution and enablement setting aligned", asyn
   );
 });
 
+test("keeps the clarify-task language model tool contribution aligned", async () => {
+  const manifest = JSON.parse(
+    await readFile(path.join(process.cwd(), "package.json"), "utf8")
+  ) as ExtensionManifest;
+  const tool = manifest.contributes.languageModelTools.find(
+    ({ name }) => name === CLARIFY_TASK_TOOL_NAME
+  );
+
+  assert.ok(tool);
+  assert.equal(tool.toolReferenceName, "clarifyTask");
+  assert.equal(
+    tool.when,
+    "config.personalSkills.languageTools.clarifyTask.enabled"
+  );
+  assert.ok(
+    Object.hasOwn(
+      manifest.contributes.configuration.properties,
+      "personalSkills.languageTools.clarifyTask.enabled"
+    )
+  );
+  assert.ok(
+    manifest.activationEvents.includes(
+      `onLanguageModelTool:${CLARIFY_TASK_TOOL_NAME}`
+    )
+  );
+});
+
 test("rejects a skill name that could escape the root", async (context) => {
   const root = await temporaryDirectory(context);
   const invalid = {
@@ -251,9 +281,15 @@ async function writeSkill(
 }
 
 interface ExtensionManifest {
+  readonly activationEvents: readonly string[];
   readonly contributes: {
     readonly chatSkills: readonly {
       readonly path: string;
+      readonly when?: string;
+    }[];
+    readonly languageModelTools: readonly {
+      readonly name: string;
+      readonly toolReferenceName?: string;
       readonly when?: string;
     }[];
     readonly configuration: {

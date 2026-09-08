@@ -30,6 +30,8 @@ discover a skill bundled in the VSIX through `contributes.chatSkills`.
 - Keep `src/extension.ts` as a composition root.
 - Put extension behavior in focused modules under `src/`.
 - Use the native `chatSkills` contribution for bundled agent skills.
+- Use `languageModelTools` for lazy, agent-selected access to full skill
+  instructions when the model can choose tools.
 - Do not write mutable user data into the installed extension directory.
 - Future user-created skills should use a supported personal location such as `~/.agents/skills/`, or another user-selected location recognized by VS Code.
 - Preserve the extension ID `personal.personal-skills` unless a deliberate migration is planned.

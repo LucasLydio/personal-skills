@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { registerClarifyTaskTool } from "./ai/clarifyTaskTool";
 import { registerSkillCommands } from "./commands/registerSkillCommands";
 import { COMMANDS, EXTENSION_ID, VIEW_ID } from "./constants";
 import { isBundledSkillEnabled } from "./services/bundledSkillState";
@@ -45,6 +46,7 @@ export function registerSkillsView(context: vscode.ExtensionContext): void {
     provider,
     verifyInstallation,
     configurationChanged,
+    registerClarifyTaskTool(context, resolvePersonalSkillsDirectory),
     vscode.window.registerTreeDataProvider(VIEW_ID, provider),
     ...registerSkillCommands(
       provider,

@@ -13,6 +13,8 @@ such as Codex can discover them.
 - Organize skills by category and optional framework or context.
 - Search skills by name, description, framework, or category.
 - Filter the sidebar by Active, Inactive, Personal, or Bundled.
+- Let compatible VS Code agents load `clarify-task` automatically through a
+  lazy language model tool.
 - Open, edit, and rename existing personal skills.
 - Activate or deactivate skills with one action.
 - Delete personal skills after an explicit confirmation.
@@ -93,6 +95,24 @@ $clarify-task Help me improve this request: I want a plan to improve security.
 In Codex, you can also run `/skills` and select the skill. Writing “use the
 Personal Skills extension” does not invoke a specific skill because the
 extension name and skill name are different.
+
+## Automatic clarify-task tool
+
+The extension also contributes a read-only language model tool named
+`personal_skills_get_clarify_task`. Compatible VS Code agents can choose this
+tool automatically when a plain-English request asks to clarify, refine, or
+improve an ambiguous task or prompt.
+
+This keeps the normal chat context small: the agent sees only the tool name,
+description, and tiny input schema until it decides the full `clarify-task`
+instructions are useful. When called, the tool loads the active Personal
+`clarify-task` skill first, then falls back to the bundled copy.
+
+You can also reference it manually with `#clarifyTask` if your VS Code chat UI
+supports tool attachments.
+
+To disable this tool, turn off **Personal Skills: Language Tools: Clarify Task:
+Enabled** in VS Code settings.
 
 ## Create a personal skill
 
