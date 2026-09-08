@@ -15,6 +15,8 @@ such as Codex can discover them.
 - Filter the sidebar by Active, Inactive, Personal, or Bundled.
 - Let compatible VS Code agents load `clarify-task` automatically through a
   lazy language model tool.
+- Let compatible VS Code agents load any enabled skill with a universal lazy
+  language model tool.
 - Open, edit, and rename existing personal skills.
 - Activate or deactivate skills with one action.
 - Delete personal skills after an explicit confirmation.
@@ -113,6 +115,42 @@ supports tool attachments.
 
 To disable this tool, turn off **Personal Skills: Language Tools: Clarify Task:
 Enabled** in VS Code settings.
+
+## Universal personal skill tool
+
+The extension also contributes `personal_skills_get_skill`, a read-only lazy
+loader for any enabled Personal or Bundled skill.
+
+The tool searches enabled skills by:
+
+- exact skill name;
+- description;
+- framework or context;
+- category;
+- plain-English task query.
+
+When the query clearly matches one skill, the tool returns that skill's full
+`SKILL.md`. When multiple skills match equally, it returns a short candidate
+list so the agent can ask the user to choose instead of guessing.
+
+Personal skills are preferred over Bundled skills with the same name. Inactive
+Personal skills are ignored. Bundled skills are included only when their bundled
+setting is enabled.
+
+You can reference the universal loader manually with:
+
+```text
+#personalSkill angular
+```
+
+or:
+
+```text
+#personalSkill Use my backend skill to review this API design.
+```
+
+To disable this tool, turn off **Personal Skills: Language Tools: Personal
+Skill: Enabled** in VS Code settings.
 
 ## Create a personal skill
 

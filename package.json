@@ -33,7 +33,8 @@
     "onCommand:personalSkills.deleteSkill",
     "onCommand:personalSkills.toggleSkill",
     "onCommand:personalSkills.copyBundledSkill",
-    "onLanguageModelTool:personal_skills_get_clarify_task"
+    "onLanguageModelTool:personal_skills_get_clarify_task",
+    "onLanguageModelTool:personal_skills_get_skill"
   ],
   "type": "commonjs",
   "main": "./out/src/extension.js",
@@ -66,6 +67,32 @@
               "description": "Optional user request that needs clarification."
             }
           }
+        }
+      },
+      {
+        "name": "personal_skills_get_skill",
+        "displayName": "Get Personal Skill",
+        "modelDescription": "Finds and returns the full instructions for one enabled personal or bundled skill by matching a skill name, category, framework, description, or user task. Use when the user asks to use a personal skill, apply a framework-specific workflow, or load reusable agent instructions. If the match is ambiguous, returns candidate skills instead of guessing.",
+        "userDescription": "Loads enabled Personal Skills instructions on demand.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "personalSkill",
+        "icon": "$(symbol-misc)",
+        "when": "config.personalSkills.languageTools.personalSkill.enabled",
+        "tags": [
+          "personal-skills",
+          "skills"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Skill name, category, framework, description, or user task to match."
+            }
+          },
+          "required": [
+            "query"
+          ]
         }
       }
     ],
@@ -158,6 +185,12 @@
           "default": true,
           "scope": "window",
           "description": "Expose clarify-task as a read-only language model tool so agents can load the full skill only when needed."
+        },
+        "personalSkills.languageTools.personalSkill.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "description": "Expose a read-only universal language model tool that can load any enabled personal or bundled skill on demand."
         }
       }
     },

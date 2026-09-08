@@ -41,6 +41,17 @@ The tool is read-only and does not create, edit, activate, deactivate, or delete
 skills. It can be disabled with
 `personalSkills.languageTools.clarifyTask.enabled`.
 
+The extension also contributes `personal_skills_get_skill`, a universal
+read-only loader for enabled Personal and Bundled skills. Its input is a single
+`query` value. The matcher checks skill name, description, framework/context,
+category, and task text. Exact skill-name matches win immediately; otherwise
+equally scored matches return a candidate list.
+
+The universal loader prefers active Personal skills over Bundled skills with the
+same name. Inactive Personal skills are ignored, and Bundled skills are included
+only when their bundled enablement setting is active. It can be disabled with
+`personalSkills.languageTools.personalSkill.enabled`.
+
 ## Categories
 
 Skills can be assigned to General, Backend, Frontend, DevOps, CI/CD, Testing,

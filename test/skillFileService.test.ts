@@ -5,7 +5,8 @@ import * as path from "node:path";
 import test from "node:test";
 import {
   BUNDLED_ENABLEMENT_SETTINGS,
-  CLARIFY_TASK_TOOL_NAME
+  CLARIFY_TASK_TOOL_NAME,
+  PERSONAL_SKILLS_TOOL_NAME
 } from "../src/constants";
 import type { SkillFormValue } from "../src/domain/skill";
 import {
@@ -200,6 +201,33 @@ test("keeps the clarify-task language model tool contribution aligned", async ()
   assert.ok(
     manifest.activationEvents.includes(
       `onLanguageModelTool:${CLARIFY_TASK_TOOL_NAME}`
+    )
+  );
+});
+
+test("keeps the universal skill language model tool contribution aligned", async () => {
+  const manifest = JSON.parse(
+    await readFile(path.join(process.cwd(), "package.json"), "utf8")
+  ) as ExtensionManifest;
+  const tool = manifest.contributes.languageModelTools.find(
+    ({ name }) => name === PERSONAL_SKILLS_TOOL_NAME
+  );
+
+  assert.ok(tool);
+  assert.equal(tool.toolReferenceName, "personalSkill");
+  assert.equal(
+    tool.when,
+    "config.personalSkills.languageTools.personalSkill.enabled"
+  );
+  assert.ok(
+    Object.hasOwn(
+      manifest.contributes.configuration.properties,
+      "personalSkills.languageTools.personalSkill.enabled"
+    )
+  );
+  assert.ok(
+    manifest.activationEvents.includes(
+      `onLanguageModelTool:${PERSONAL_SKILLS_TOOL_NAME}`
     )
   );
 });

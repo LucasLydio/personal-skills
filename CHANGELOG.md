@@ -5,6 +5,8 @@
 - Add sidebar search by skill name, description, framework, or category.
 - Add filters for Active, Inactive, Personal, and Bundled skills.
 - Expose `clarify-task` as a lazy read-only language model tool.
+- Add `personal_skills_get_skill` as a universal lazy loader for enabled
+  Personal and Bundled skills.
 - Allow personal skills to be renamed safely from the edit form.
 - Display complete skill-name rules and an example in the editor.
 - Replace the diagnostic `example-skill` with the useful `clarify-task`
