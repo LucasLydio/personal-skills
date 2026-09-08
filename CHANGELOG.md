@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add sidebar search by skill name, description, framework, or category.
+- Add filters for Active, Inactive, Personal, and Bundled skills.
 - Allow personal skills to be renamed safely from the edit form.
 - Display complete skill-name rules and an example in the editor.
 - Replace the diagnostic `example-skill` with the useful `clarify-task`

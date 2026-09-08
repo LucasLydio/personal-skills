@@ -14,6 +14,11 @@ export function registerSkillsView(context: vscode.ExtensionContext): void {
     isBundledSkillEnabled
   );
   output.appendLine("Personal Skills activated.");
+  void vscode.commands.executeCommand(
+    "setContext",
+    "personalSkills.filtersActive",
+    false
+  );
 
   const verifyInstallation = vscode.commands.registerCommand(
     COMMANDS.verify,

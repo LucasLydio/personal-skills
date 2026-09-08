@@ -11,6 +11,8 @@ such as Codex can discover them.
 
 - Create personal skills from a guided form.
 - Organize skills by category and optional framework or context.
+- Search skills by name, description, framework, or category.
+- Filter the sidebar by Active, Inactive, Personal, or Bundled.
 - Open, edit, and rename existing personal skills.
 - Activate or deactivate skills with one action.
 - Delete personal skills after an explicit confirmation.
@@ -128,6 +130,9 @@ Valid example: `nodejs-api-review`.
 
 Select or right-click a skill to use the available actions:
 
+- **Search Skills:** Search across name, description, framework, and category.
+- **Filter Skills:** Show only Active, Inactive, Personal, or Bundled skills.
+- **Clear Skill Filters:** Reset the current search and filter.
 - **Open:** Open the skill instructions as Markdown.
 - **Edit:** Change its name, description, category, context, instructions, or
   activation state.

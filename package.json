@@ -24,6 +24,9 @@
     "onView:personalSkills.skills",
     "onCommand:personalSkills.verifyInstallation",
     "onCommand:personalSkills.refresh",
+    "onCommand:personalSkills.searchSkills",
+    "onCommand:personalSkills.filterSkills",
+    "onCommand:personalSkills.clearSkillFilters",
     "onCommand:personalSkills.openSkill",
     "onCommand:personalSkills.addSkill",
     "onCommand:personalSkills.editSkill",
@@ -52,6 +55,24 @@
         "title": "Refresh Skills",
         "category": "Personal Skills",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "personalSkills.searchSkills",
+        "title": "Search Skills",
+        "category": "Personal Skills",
+        "icon": "$(search)"
+      },
+      {
+        "command": "personalSkills.filterSkills",
+        "title": "Filter Skills",
+        "category": "Personal Skills",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "personalSkills.clearSkillFilters",
+        "title": "Clear Skill Filters",
+        "category": "Personal Skills",
+        "icon": "$(clear-all)"
       },
       {
         "command": "personalSkills.openSkill",
@@ -135,14 +156,29 @@
           "group": "navigation@1"
         },
         {
-          "command": "personalSkills.refresh",
+          "command": "personalSkills.searchSkills",
           "when": "view == personalSkills.skills",
           "group": "navigation@2"
         },
         {
-          "command": "personalSkills.verifyInstallation",
+          "command": "personalSkills.filterSkills",
           "when": "view == personalSkills.skills",
           "group": "navigation@3"
+        },
+        {
+          "command": "personalSkills.clearSkillFilters",
+          "when": "view == personalSkills.skills && personalSkills.filtersActive",
+          "group": "navigation@4"
+        },
+        {
+          "command": "personalSkills.refresh",
+          "when": "view == personalSkills.skills",
+          "group": "navigation@5"
+        },
+        {
+          "command": "personalSkills.verifyInstallation",
+          "when": "view == personalSkills.skills",
+          "group": "navigation@6"
         }
       ],
       "view/item/context": [
@@ -227,7 +263,7 @@
     "precompile": "npm run clean",
     "compile": "tsc -p ./",
     "watch": "tsc --watch -p ./",
-    "test": "npm run compile && node --test out/test/skillFileService.test.js",
+    "test": "npm run compile && node --test \"out/test/*.test.js\"",
     "package": "vsce package --out personal-skills.vsix",
     "install:local": "npm run package && code --install-extension personal-skills.vsix --force"
   },

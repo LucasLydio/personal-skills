@@ -2,6 +2,11 @@ import * as vscode from "vscode";
 import { COMMANDS } from "../constants";
 import type { SkillCategory } from "../domain/skill";
 import {
+  DEFAULT_SKILL_FILTERS,
+  describeSkillFilters,
+  type SkillFilterState
+} from "../domain/skillFilters";
+import {
   copyBundledSkill,
   createPersonalSkill,
   deletePersonalSkill,
@@ -23,6 +28,39 @@ export function registerSkillCommands(
 ): vscode.Disposable[] {
   return [
     vscode.commands.registerCommand(COMMANDS.refresh, () => provider.refresh()),
+    vscode.commands.registerCommand(COMMANDS.search, async () => {
+      const current = provider.getFilters();
+      const query = await vscode.window.showInputBox({
+        title: "Search Skills",
+        prompt: "Search by name, description, framework, or category.",
+        placeHolder: "react, backend, security, prompt...",
+        value: current.query
+      });
+      if (query === undefined) {
+        return;
+      }
+
+      updateFilters(provider, output, { ...current, query });
+    }),
+    vscode.commands.registerCommand(COMMANDS.filter, async () => {
+      const current = provider.getFilters();
+      const picked = await vscode.window.showQuickPick(filterOptions, {
+        title: "Filter Skills",
+        placeHolder: "Choose which skills to show"
+      });
+      if (!picked) {
+        return;
+      }
+
+      updateFilters(provider, output, {
+        ...current,
+        state: picked.state,
+        source: picked.source
+      });
+    }),
+    vscode.commands.registerCommand(COMMANDS.clearFilters, () => {
+      updateFilters(provider, output, DEFAULT_SKILL_FILTERS);
+    }),
     vscode.commands.registerCommand(COMMANDS.open, openSkill),
     vscode.commands.registerCommand(COMMANDS.add, async (item?: unknown) => {
       const category = initialCategory(item);
@@ -137,6 +175,53 @@ export function registerSkillCommands(
       }
     )
   ];
+}
+
+const filterOptions: readonly FilterQuickPickItem[] = [
+  {
+    label: "All Skills",
+    description: "Personal and bundled, active and inactive",
+    state: "all",
+    source: "all"
+  },
+  {
+    label: "Active",
+    description: "Only enabled skills",
+    state: "active",
+    source: "all"
+  },
+  {
+    label: "Inactive",
+    description: "Only disabled skills",
+    state: "inactive",
+    source: "all"
+  },
+  {
+    label: "Personal",
+    description: "Only skills from your configured personal directory",
+    state: "all",
+    source: "personal"
+  },
+  {
+    label: "Bundled",
+    description: "Only skills shipped with the extension",
+    state: "all",
+    source: "bundled"
+  }
+];
+
+interface FilterQuickPickItem extends vscode.QuickPickItem {
+  readonly state: SkillFilterState["state"];
+  readonly source: SkillFilterState["source"];
+}
+
+function updateFilters(
+  provider: SkillsTreeProvider,
+  output: vscode.OutputChannel,
+  filters: SkillFilterState
+): void {
+  provider.setFilters(filters);
+  output.appendLine(`Skill filters changed: ${describeSkillFilters(filters)}.`);
 }
 
 async function openSkill(item: SkillTreeItem | undefined): Promise<void> {

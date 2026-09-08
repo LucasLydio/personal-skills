@@ -5,6 +5,9 @@ export const DEFAULT_SKILLS_DIRECTORY = "~/.agents/skills";
 export const COMMANDS = {
   verify: "personalSkills.verifyInstallation",
   refresh: "personalSkills.refresh",
+  search: "personalSkills.searchSkills",
+  filter: "personalSkills.filterSkills",
+  clearFilters: "personalSkills.clearSkillFilters",
   open: "personalSkills.openSkill",
   add: "personalSkills.addSkill",
   edit: "personalSkills.editSkill",

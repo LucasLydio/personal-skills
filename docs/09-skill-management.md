@@ -15,6 +15,17 @@ keeping bundled extension assets immutable.
 Bundled skills are installed extension assets and may be replaced during an
 extension update. Editing or deleting them in place is intentionally blocked.
 
+## Search and filters
+
+The Skills sidebar includes title-bar commands for narrowing the visible tree:
+
+- Search matches skill name, description, framework/context, and category.
+- Filter supports Active, Inactive, Personal, and Bundled views.
+- Clear Skill Filters resets both the search text and the selected filter.
+
+Search and filters only change the visible sidebar results. They do not rename,
+activate, deactivate, move, or delete any skill files.
+
 ## Categories
 
 Skills can be assigned to General, Backend, Frontend, DevOps, CI/CD, Testing,

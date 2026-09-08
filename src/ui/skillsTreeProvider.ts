@@ -8,6 +8,12 @@ import {
   type SkillRecord,
   type SkillSource
 } from "../domain/skill";
+import {
+  DEFAULT_SKILL_FILTERS,
+  applySkillFilters,
+  hasActiveSkillFilters,
+  type SkillFilterState
+} from "../domain/skillFilters";
 import { discoverSkills } from "../services/skillFileService";
 
 export type SkillsTreeNode =
@@ -88,6 +94,7 @@ export class SkillsTreeProvider
   private readonly changed = new vscode.EventEmitter<
     SkillsTreeNode | undefined
   >();
+  private filters: SkillFilterState = DEFAULT_SKILL_FILTERS;
   public readonly onDidChangeTreeData = this.changed.event;
 
   public constructor(
@@ -103,6 +110,20 @@ export class SkillsTreeProvider
 
   public refresh(): void {
     this.changed.fire(undefined);
+  }
+
+  public setFilters(filters: SkillFilterState): void {
+    this.filters = filters;
+    void vscode.commands.executeCommand(
+      "setContext",
+      "personalSkills.filtersActive",
+      hasActiveSkillFilters(filters)
+    );
+    this.refresh();
+  }
+
+  public getFilters(): SkillFilterState {
+    return this.filters;
   }
 
   public getTreeItem(item: SkillsTreeNode): vscode.TreeItem {
@@ -138,16 +159,37 @@ export class SkillsTreeProvider
         ...skill,
         enabled: this.isBundledEnabled(skill.name)
       }));
+      const filteredSkills = applySkillFilters(
+        [...personalSkills, ...bundledSkills],
+        this.filters
+      );
+      const filteredPersonal = filteredSkills.filter(
+        (skill) => skill.source === "personal"
+      );
+      const filteredBundled = filteredSkills.filter(
+        (skill) => skill.source === "bundled"
+      );
+      const filtersActive = hasActiveSkillFilters(this.filters);
 
       this.output.appendLine(
         `Discovered ${personalSkills.length} personal and ${bundledSkills.length} bundled skill(s).`
       );
       this.output.appendLine(`Personal skills directory: ${personalDirectory}`);
 
+      if (filtersActive && filteredSkills.length === 0) {
+        return [new MessageTreeItem("No skills match the current filters.")];
+      }
+
       return [
-        new SourceTreeItem("Personal", "personal", personalSkills),
-        new SourceTreeItem("Bundled", "bundled", bundledSkills)
-      ];
+        this.filters.source !== "bundled" &&
+        (!filtersActive || filteredPersonal.length > 0)
+          ? new SourceTreeItem("Personal", "personal", filteredPersonal)
+          : undefined,
+        this.filters.source !== "personal" &&
+        (!filtersActive || filteredBundled.length > 0)
+          ? new SourceTreeItem("Bundled", "bundled", filteredBundled)
+          : undefined
+      ].filter((item): item is SourceTreeItem => Boolean(item));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.output.appendLine(`Skill discovery failed: ${message}`);
