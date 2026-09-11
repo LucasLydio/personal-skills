@@ -330,6 +330,7 @@
     "watch": "tsc --watch -p ./",
     "test": "npm run compile && node --test \"out/test/*.test.js\"",
     "package": "vsce package --out personal-skills.vsix",
+    "package:release": "node -e \"const fs = require('node:fs'); fs.rmSync('release', { recursive: true, force: true }); fs.mkdirSync('release', { recursive: true });\" && vsce package --out release/personal-skills.vsix",
     "install:local": "npm run package && code --install-extension personal-skills.vsix --force"
   },
   "devDependencies": {

@@ -1,9 +1,11 @@
 .vscode/**
+.github/**
 src/**
 test/**
 docs/**
 node_modules/**
 out/test/**
+release/**
 *.vsix
 *.log
 tsconfig.json

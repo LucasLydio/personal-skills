@@ -1,52 +1,40 @@
 # Personal Skills
 
 Personal Skills is a Visual Studio Code extension for creating, organizing, and
-managing reusable agent skills without editing their files manually.
+loading reusable agent skills from your editor.
 
-Skills are stored in the standard `skill-name/SKILL.md` format. By default,
-personal skills are saved in `~/.agents/skills`, where compatible coding agents
-such as Codex can discover them.
+It stores skills in the standard `skill-name/SKILL.md` format. By default,
+Personal skills are saved in `~/.agents/skills`, which is a common location for
+compatible coding agents such as Codex.
 
-## What you can do
+## Features
 
-- Create personal skills from a guided form.
-- Organize skills by category and optional framework or context.
-- Search skills by name, description, framework, or category.
+- Create Personal skills from a guided form.
+- Organize skills by category and optional framework/context.
+- Search by name, description, framework, or category.
 - Filter the sidebar by Active, Inactive, Personal, or Bundled.
-- Let compatible VS Code agents load `clarify-task` automatically through a
-  lazy language model tool.
-- Let compatible VS Code agents load any enabled skill with a universal lazy
-  language model tool.
-- Open, edit, and rename existing personal skills.
-- Activate or deactivate skills with one action.
-- Delete personal skills after an explicit confirmation.
-- Install bundled skills into your Personal skills directory.
-- Keep skill state and metadata across VS Code restarts.
-- Change the Personal skills directory from VS Code settings.
-
-<!-- Add the real screenshots when they are available:
-
-![Personal Skills sidebar](docs/images/personal-skills-sidebar.png)
-
-![Create and edit skill form](docs/images/skill-editor.png)
-
-![Installing the bundled clarify-task skill](docs/images/install-clarify-task.png)
--->
+- Open, edit, rename, activate, deactivate, and delete Personal skills.
+- Copy Bundled skills into your Personal skills directory.
+- Keep activation state and metadata across VS Code restarts.
+- Expose `clarify-task` through the native `chatSkills` contribution.
+- Expose lazy read-only language model tools:
+  - `personal_skills_get_clarify_task`
+  - `personal_skills_get_skill`
 
 ## Requirements
 
 - Visual Studio Code `1.134.0` or newer.
-- A compatible agent if you want the created skills to affect agent behavior.
+- A compatible AI/chat agent if you want skills or language model tools to
+  affect agent behavior.
 
-The sidebar and skill editor work independently of an agent. Agent discovery
-depends on the agent supporting the selected skills directory.
+The sidebar and skill editor work without an agent. Agent behavior depends on
+the agent supporting the selected skills directory, VS Code chat skills, or VS
+Code language model tools.
 
-## Install without cloning the repository
+## Install from a release
 
-### Download with curl
-
-The command below downloads the `personal-skills.vsix` asset from the latest
-GitHub Release.
+The latest release should include an asset named exactly
+`personal-skills.vsix`.
 
 Windows PowerShell:
 
@@ -62,231 +50,294 @@ curl -fL "https://github.com/LucasLydio/personal-skills/releases/latest/download
 code --install-extension "./personal-skills.vsix" --force
 ```
 
-This URL works when the latest GitHub Release contains an asset named exactly
-`personal-skills.vsix`.
+After installation, run **Developer: Reload Window** in VS Code.
 
-### Install manually
+### Manual install
 
 1. Open the [latest GitHub Release](https://github.com/LucasLydio/personal-skills/releases/latest).
 2. Download `personal-skills.vsix`.
 3. Open the **Extensions** view in VS Code.
-4. Select the **Views and More Actions** (`...`) menu.
+4. Select the `...` menu.
 5. Select **Install from VSIX...**.
 6. Choose the downloaded file.
-7. Run **Developer: Reload Window** from the Command Palette.
+7. Reload VS Code.
 
 ## First use
 
-1. Select the **Personal Skills** icon in the VS Code Activity Bar.
-2. Expand **Personal** to see skills already installed in your configured
-   Personal skills directory.
-3. Expand **Bundled** to see skills supplied by the extension.
-4. Use the **Copy to Personal Skills** action on `clarify-task` so Codex can
-   discover it from `~/.agents/skills`.
-5. Start a new agent chat if the skill does not appear immediately.
+1. Open the **Personal Skills** activity bar icon.
+2. Expand **Personal** to see skills from your configured Personal skills
+   directory.
+3. Expand **Bundled** to see skills shipped with the extension.
+4. Use **Create Personal Skill** to create a new skill.
+5. Use **Copy to Personal Skills** on a Bundled skill if you want an editable
+   Personal copy.
 
-Bundled skills remain read-only because extension updates can replace their
-files. Copying a bundled skill creates an editable Personal version.
+Bundled skills are read-only because extension updates can replace their files.
+Personal skills are editable and live in your configured skills directory.
 
-To invoke the bundled skill after copying it, use its actual skill name:
+## Skill actions
+
+Use the sidebar title actions to:
+
+- create a Personal skill;
+- search visible skills;
+- filter by Active, Inactive, Personal, or Bundled;
+- clear active filters;
+- refresh the tree;
+- verify the extension installation.
+
+Use a skill item action to:
+
+- open its `SKILL.md`;
+- edit a Personal skill;
+- activate or deactivate a skill;
+- delete a Personal skill after confirmation;
+- copy a Bundled skill to Personal.
+
+Renaming a skill updates both its folder name and `SKILL.md` frontmatter.
+Resources inside `scripts`, `references`, and `assets` move with the skill.
+
+## Skill-name rules
+
+A skill name must:
+
+- contain 1-64 characters;
+- use lowercase letters (`a-z`) and numbers (`0-9`);
+- use single hyphens between words;
+- not contain spaces, underscores, or uppercase letters;
+- not begin or end with a hyphen;
+- not contain repeated hyphens.
+
+Valid example:
 
 ```text
-$clarify-task Help me improve this request: I want a plan to improve security.
+nodejs-api-review
 ```
 
-In Codex, you can also run `/skills` and select the skill. Writing “use the
-Personal Skills extension” does not invoke a specific skill because the
-extension name and skill name are different.
+## Categories and files
 
-## Automatic clarify-task tool
+Categories organize the VS Code sidebar only. They do not create category
+folders, so the layout remains compatible with agent skill discovery:
 
-The extension also contributes a read-only language model tool named
-`personal_skills_get_clarify_task`. Compatible VS Code agents can choose this
-tool automatically when a plain-English request asks to clarify, refine, or
-improve an ambiguous task or prompt.
+```text
+~/.agents/skills/
+`-- skill-name/
+    |-- SKILL.md
+    |-- .personal-skills.json
+    |-- scripts/
+    |-- references/
+    `-- assets/
+```
 
-This keeps the normal chat context small: the agent sees only the tool name,
-description, and tiny input schema until it decides the full `clarify-task`
-instructions are useful. When called, the tool loads the active Personal
-`clarify-task` skill first, then falls back to the bundled copy.
+`.personal-skills.json` stores extension presentation metadata:
 
-You can also reference it manually with `#clarifyTask` if your VS Code chat UI
-supports tool attachments.
+```json
+{
+  "category": "backend",
+  "framework": "NestJS"
+}
+```
 
-To disable this tool, turn off **Personal Skills: Language Tools: Clarify Task:
-Enabled** in VS Code settings.
+## Activation
 
-## Universal personal skill tool
+An active Personal skill uses:
 
-The extension also contributes `personal_skills_get_skill`, a read-only lazy
-loader for any enabled Personal or Bundled skill.
+```text
+SKILL.md
+```
 
-The tool searches enabled skills by:
+An inactive Personal skill uses:
+
+```text
+SKILL.md.disabled
+```
+
+Because activation state is stored on disk, it survives VS Code restarts.
+
+Bundled skill activation is stored in VS Code settings. Currently the bundled
+skill is:
+
+```text
+clarify-task
+```
+
+## Lazy language model tools
+
+The extension contributes two read-only language model tools. They are lazy:
+compatible agents see a small tool definition first and only receive full
+`SKILL.md` content when they call the tool.
+
+### `personal_skills_get_clarify_task`
+
+Loads the `clarify-task` skill when a request should be clarified, refined, or
+turned into a better task prompt.
+
+Manual reference name:
+
+```text
+#clarifyTask
+```
+
+The tool loads the active Personal `clarify-task` first. If that is missing or
+inactive, it falls back to the Bundled `clarify-task`.
+
+### `personal_skills_get_skill`
+
+Loads any enabled Personal or Bundled skill on demand.
+
+Manual reference name:
+
+```text
+#personalSkill
+```
+
+The tool searches by:
 
 - exact skill name;
 - description;
-- framework or context;
+- framework/context;
 - category;
 - plain-English task query.
 
-When the query clearly matches one skill, the tool returns that skill's full
-`SKILL.md`. When multiple skills match equally, it returns a short candidate
-list so the agent can ask the user to choose instead of guessing.
+If one clear match is found, it returns the full `SKILL.md`. If multiple skills
+match equally, it returns a short candidate list so the agent can ask which one
+to use.
 
-Personal skills are preferred over Bundled skills with the same name. Inactive
-Personal skills are ignored. Bundled skills are included only when their bundled
-setting is enabled.
-
-You can reference the universal loader manually with:
+Examples:
 
 ```text
 #personalSkill angular
 ```
 
-or:
-
 ```text
-#personalSkill Use my backend skill to review this API design.
+Please use my backend skill to review this API design.
 ```
 
-To disable this tool, turn off **Personal Skills: Language Tools: Personal
-Skill: Enabled** in VS Code settings.
+Only enabled skills are exposed:
 
-## Create a personal skill
+- Active Personal skills are loadable.
+- Inactive Personal skills are ignored.
+- Enabled Bundled skills are loadable.
+- Disabled Bundled skills are ignored.
+- Active Personal skills win over Bundled skills with the same name.
 
-1. Open the **Personal Skills** sidebar.
-2. Select the **Create Personal Skill** (`+`) button.
-3. Complete the form:
+## Configure settings
 
-   - **Name:** The agent-facing skill name.
-   - **Category:** General, Backend, Frontend, DevOps, CI/CD, Testing, Data,
-     Mobile, Security, or Other.
-   - **Description:** Explain what the skill does and when the agent should use
-     it.
-   - **Framework or context:** An optional value such as Angular, NestJS,
-     Terraform, or GitHub Actions.
-   - **Instructions:** The Markdown workflow the agent should follow.
-   - **Active for agents:** Controls whether the standard `SKILL.md` file is
-     discoverable.
+Open VS Code Settings and search for **Personal Skills**.
 
-4. Select **Create skill**.
+Available settings:
 
-### Skill-name rules
-
-A skill name must:
-
-- contain 1–64 characters;
-- use lowercase letters (`a-z`) and numbers (`0-9`);
-- use only one hyphen between words;
-- not contain spaces, underscores, or uppercase letters;
-- not begin or end with a hyphen;
-- not contain repeated hyphens.
-
-Valid example: `nodejs-api-review`.
-
-## Manage skills
-
-Select or right-click a skill to use the available actions:
-
-- **Search Skills:** Search across name, description, framework, and category.
-- **Filter Skills:** Show only Active, Inactive, Personal, or Bundled skills.
-- **Clear Skill Filters:** Reset the current search and filter.
-- **Open:** Open the skill instructions as Markdown.
-- **Edit:** Change its name, description, category, context, instructions, or
-  activation state.
-- **Activate/Deactivate:** Make the skill discoverable or hide it from agents.
-- **Delete:** Permanently remove a Personal skill after confirmation.
-- **Copy to Personal Skills:** Install an editable copy of a Bundled skill.
-- **Refresh:** Reload skills from the filesystem.
-
-Renaming a skill updates its folder and its `SKILL.md` frontmatter together.
-Resources inside `scripts`, `references`, and `assets` move with the skill.
-
-## Categories and filesystem layout
-
-Categories organize the sidebar but do not add category folders. The layout
-remains compatible with native skill discovery:
-
-```text
-~/.agents/skills/
-└── skill-name/
-    ├── SKILL.md
-    ├── .personal-skills.json
-    ├── scripts/
-    ├── references/
-    └── assets/
-```
-
-`.personal-skills.json` contains only presentation metadata such as category
-and framework context.
-
-## Activation and persistence
-
-An active Personal skill uses `SKILL.md`. Deactivation renames it to
-`SKILL.md.disabled`, and activation restores the standard filename. Because the
-state is stored on disk, it survives VS Code restarts.
-
-If a newly created or activated skill is missing from an existing agent chat,
-start a new chat or restart the agent so it rescans the skills directory.
-
-## Configure the skills directory
-
-The default directory is:
-
-```text
-~/.agents/skills
-```
-
-To change it:
-
-1. Open VS Code Settings.
-2. Search for **Personal Skills: Skills Directory**.
-3. Enter the desired path.
-4. Return to the sidebar and select **Refresh**.
-
-Use a directory supported by your agent. A custom directory can appear in the
-extension while remaining invisible to an agent that does not scan that path.
+- **Skills Directory:** where Personal skills are stored. Default:
+  `~/.agents/skills`.
+- **Bundled: Clarify Task Enabled:** enables the Bundled `clarify-task` skill.
+- **Language Tools: Clarify Task Enabled:** exposes
+  `personal_skills_get_clarify_task`.
+- **Language Tools: Personal Skill Enabled:** exposes
+  `personal_skills_get_skill`.
 
 ## Troubleshooting
 
-### The extension is installed but its icon is missing
+### The icon does not appear
 
-Run **Developer: Reload Window**, then search for **Personal Skills: Verify
-Installation** in the Command Palette.
+Run **Developer: Reload Window**, then run **Personal Skills: Verify
+Installation** from the Command Palette.
 
 ### A skill appears in the sidebar but not in Codex
 
-- Confirm it appears under **Personal**, not only under **Bundled**.
-- Confirm its file is named `SKILL.md`, not `SKILL.md.disabled`.
-- Confirm the configured directory is `~/.agents/skills` or another location
-  supported by the agent.
-- Start a new chat or restart Codex.
-- Invoke the exact name with `$skill-name` or select it through `/skills`.
+- Confirm it appears under **Personal** or is available through a language
+  model tool.
+- Confirm a Personal skill is active and uses `SKILL.md`, not
+  `SKILL.md.disabled`.
+- Confirm the configured directory is `~/.agents/skills` or another directory
+  your agent scans.
+- Start a new chat or restart the agent so it rescans skills.
+- Invoke the exact skill with `$skill-name`, select it through `/skills`, or use
+  `#personalSkill` if your chat UI supports tool references.
 
 ### The curl command returns HTTP 404
 
-The repository does not yet have a published release, or the latest release
-does not contain an asset named `personal-skills.vsix`. Download the asset from
-the [Releases page](https://github.com/LucasLydio/personal-skills/releases) or
-ask the maintainer to publish it using that filename.
+The repository has no published release yet, or the latest release does not
+include an asset named exactly `personal-skills.vsix`.
+
+Create a release on GitHub and attach the packaged VSIX with that filename.
 
 ## Development
 
+Install dependencies:
+
 ```powershell
 npm install
+```
+
+Run tests:
+
+```powershell
 npm test
 ```
 
-Press `F5` to test the extension in an Extension Development Host.
+Package the extension:
 
-To package and install the development version locally:
+```powershell
+npm run package
+```
+
+Package the release asset into `release/personal-skills.vsix`:
+
+```powershell
+npm run package:release
+```
+
+Install the local package into VS Code:
 
 ```powershell
 npm run install:local
 ```
 
-Development and verification documentation is available in
-[`docs/README.md`](docs/README.md).
+Press `F5` in VS Code to run the extension in an Extension Development Host.
+
+## Publish a GitHub release
+
+The repository includes a GitHub Actions workflow that publishes the VSIX
+automatically when you push a version tag like `v0.2.0`.
+
+Before publishing, run the checks locally:
+
+```powershell
+npm test
+npm run package:release
+```
+
+Commit and push the code:
+
+```powershell
+git add .
+git commit -m "feat: add lazy personal skill loader"
+git push origin main
+```
+
+Create and push a version tag:
+
+```powershell
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+GitHub Actions will then:
+
+- install dependencies;
+- run the test suite;
+- build `release/personal-skills.vsix`;
+- create a GitHub Release for the tag;
+- upload the VSIX as the release asset.
+
+After the workflow finishes, this URL will work:
+
+```text
+https://github.com/LucasLydio/personal-skills/releases/latest/download/personal-skills.vsix
+```
+
+The release asset name is `personal-skills.vsix`, which is why the curl install
+command can download it from `/releases/latest/download/personal-skills.vsix`.
 
 ## License
 
